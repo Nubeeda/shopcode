@@ -1,5 +1,9 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link,useNavigate } from "react-router-dom";
+import { Navigation } from "swiper/modules";
 const Layout = ({children}) => {
+  const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
   const menu = [
     {
       lable: "Home",
@@ -18,12 +22,22 @@ const Layout = ({children}) => {
       href: "/contacts",
     },
   ];
+  const Mobilelink=(href)=>{
+    setOpen(false)
+    navigate(href)
+  }
   return (
     <div>
       <nav className="shadow-lg sticky top-0 left-0 bg-white">
-        <div className="w-7xl mx-auto flex justify-between items-center">
+        <div className="md:w-7xl mx-auto flex justify-between items-center">
           <img src="images/logo.jpg" className="w-24 h-24" />
-          <ul className="flex gap-6">
+          <button className="md:hidden"
+          onClick={()=>setOpen(!open)}
+          >
+          <i className="ri-menu-3-fill text-2xl"></i>
+          </button>
+          
+          <ul className="md:flex gap-6 hidden">
             {menu.map((item, index) => (
               <li key={index}>
                 <Link
@@ -107,17 +121,17 @@ const Layout = ({children}) => {
             </h1>
            <form className="space-y-4">
             <input
-            className="bg-white w-96 p-2 rounded" 
+            className="bg-white w-90 p-2 rounded" 
             type="text" 
             placeholder="Enter Fullname" 
             />
             <input
-            className="bg-white w-96 p-2 rounded" 
+            className="bg-white w-90 p-2 rounded" 
             type="email" 
             placeholder="Enter email Id" 
             />
             <textarea 
-            className="bg-white w-96 p-2 rounded" 
+            className="bg-white w-90 p-2 rounded" 
             name="message"
             placeholder="Message"
             rows={3} 
@@ -128,6 +142,25 @@ const Layout = ({children}) => {
           </div>
         </div>
       </footer>
+        
+          <aside 
+          className="overflow-hidden md:hidden bg-slate-900 h-full fixed top-0 left-0 z-50"
+          style={{
+            width:(open ? 250 :0),
+            transition: "0.6s"
+          }}
+          >
+           <div className="flex flex-col items-start p-4 gap-6">
+              {
+                menu.map((item,index)=>(
+                  <button key={index} onClick={()=>Mobilelink(item.href)} className="text-white">
+                      {item.lable}
+                  </button>
+                ))
+              }
+           </div>
+           </aside>
+      
     </div>
   );
 };
