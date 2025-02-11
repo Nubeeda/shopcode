@@ -90,6 +90,12 @@ const Products = () => {
               </div>
               </div>
               <button className="bg-green-600 text-white w-full text-lg rounded p-2 mt-6">Buy Now</button>
+              <button 
+              className="bg-red-600 text-white w-full text-lg rounded p-2 mt-2"
+              >
+                <i className="ri-shopping-cart-line mr-2"></i>
+                Add to cart
+                </button>
             </div>
             
           ))

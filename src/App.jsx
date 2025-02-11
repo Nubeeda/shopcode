@@ -14,6 +14,9 @@ import 'remixicon/fonts/remixicon.css'
 import Home from './components/Home';
 import Product from './components/Product';
 import Category from './components/Category';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+import Contact from './components/Contact';
 
 const App = () => {
   return (
@@ -22,6 +25,9 @@ const App = () => {
         <Route path='/' element={<Home/>}/>
         <Route path='/product' element ={<Product/>}/>
         <Route path='/category' element ={<Category/>}/>
+        <Route path='/signup' element={<SignUp/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/contacts' element= {<Contact/>}/>
         <Route path="/admin">
           <Route path="products" element={<Products />}/>
           <Route path="order" element={<Orders />}/>
