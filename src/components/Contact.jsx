@@ -2,7 +2,7 @@ import Layout from "./Layout"
 const Contact = () =>{
     return (
         <Layout>
-            <header className="mx-auto py-16 shadow-lg md:w-[50%] bg-white">
+            <header className="mx-auto md:py-16 shadow-lg md:w-[50%] bg-white">
             <img src="./images/contact.avif" className="w-full"/>
             <div className="p-8">
             <form className=" space-y-6">
