@@ -17,7 +17,7 @@ import Category from './components/Category';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Contact from './components/Contact';
-
+import PreGuard from './components/Guard/Out';
 const App = () => {
   return (
     <BrowserRouter>
@@ -25,8 +25,10 @@ const App = () => {
         <Route path='/' element={<Home/>}/>
         <Route path='/product' element ={<Product/>}/>
         <Route path='/category' element ={<Category/>}/>
+        <Route element ={ <PreGuard/> }>
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/login' element={<Login/>}/>
+        </Route>
         <Route path='/contacts' element= {<Contact/>}/>
         <Route path="/admin">
           <Route path="products" element={<Products />}/>

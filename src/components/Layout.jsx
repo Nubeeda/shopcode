@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import firebaseAppConfig from "../util/Firebase-config";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 const auth = getAuth(firebaseAppConfig);
 const Layout = ({ children }) => {
   const [open, setOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
   const [session, setSession] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
@@ -12,7 +13,7 @@ const Layout = ({ children }) => {
       if (user) {
         setSession(user);
       } else {
-        setSession(null);
+        setSession(false);
       }
     });
   }, []);
@@ -38,10 +39,19 @@ const Layout = ({ children }) => {
     setOpen(false);
     navigate(href);
   };
+  if (session === null)
+    return (
+      <div className="bg-slate-100 w-full h-full fixed left-0 top-0 flex justify-center items-center">
+        <span className="relative flex size-6">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+          <span className="relative inline-flex size-6 rounded-full bg-sky-500"></span>
+        </span>
+      </div>
+    );
   return (
     <div>
-      <nav className="shadow-lg sticky top-0 left-0 bg-white">
-        <div className="md:w-7xl mx-auto flex justify-between items-center">
+      <nav className="shadow-lg sticky top-0 left-0 w-full bg-white z-[1000]">
+        <div className="max-w-7xl w-full mx-auto px-4 md:px-8 flex justify-between items-center">
           <img src="images/logo.jpg" className="w-24 h-24" />
           <button className="md:hidden" onClick={() => setOpen(!open)}>
             <i className="ri-menu-3-fill text-2xl"></i>
@@ -58,7 +68,7 @@ const Layout = ({ children }) => {
                 </Link>
               </li>
             ))}
-            {!session && 
+            {!session && (
               <>
                 <Link
                   to="/login"
@@ -73,10 +83,29 @@ const Layout = ({ children }) => {
                   SignUp
                 </Link>
               </>
-            }
-            {
-              session &&
-              <h1 className="block text-center w-[90px] py-6 hover:bg-blue-600 hover:text-white">Hi User</h1>
+            )}
+
+            {session && 
+            <button className="mt-4 relative" onClick={()=>setOpenMenu(!openMenu)}>
+              <img src="./images/ava.png" className="w-10 h-10 "/>
+              {
+                openMenu &&
+                <div className="animate__animated animate__fadeIn bg-white py-2 w-[140px] top-16 right-0 shadow-xl absolute flex flex-col">
+              <Link to={"/profile"} className="p-3 text-left hover:bg-gray-100 cursor-pointer w-full">
+              <i className="ri-user-line mr-2"></i>
+              Profile</Link>
+              <Link to={"/cart"} className="p-3 text-left hover:bg-gray-100 cursor-pointer w-full">
+              <i className="ri-shopping-cart-line mr-2"></i>
+              Cart</Link>
+              <button to={"/Logout"} className="p-3 text-left hover:bg-gray-100 cursor-pointer w-full"
+              onClick={()=>signOut(auth)}
+              >
+              <i className="ri-logout-circle-r-line mr-2"></i>
+              Logout</button>
+              </div>
+              }
+              
+            </button>
             }
           </ul>
         </div>

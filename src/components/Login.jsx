@@ -1,8 +1,48 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import 'animate.css';
+import firebaseAppConfig from "../util/Firebase-config";
+import { getAuth,signInWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth(firebaseAppConfig)
 const Login = () => {
+ const navigate = useNavigate()
+  const [formValue,setFormValue] = useState(
+    {
+      email:"",
+      password:""
+    }
+  )
     const [passwordType,setPasswordType] =useState("password")
+    const [error, setError] = useState(null)
+    const [loader, setLoader] = useState(false)
+    const Login =async (e) =>{
+      e.preventDefault()
+      console.log(formValue)
+      try{
+        e.preventDefault()
+        setLoader(true)
+       await signInWithEmailAndPassword(auth, formValue.email, formValue.password)
+       navigate("/")
+        }
+        catch(error){
+          setError(error.message)
+        }
+        finally{
+          setLoader(false)
+        }
+    }
+
+    const handleOnChange = (e)=>{
+      const input = e.target
+      const name= input.name
+      const value = input.value
+      setFormValue ({
+        ...formValue,
+        [name] : value
+      })
+      setError(null)
+    }
   return (
     <div className="grid md:grid-cols-2 overflow-hidden md:h-screen animate__animated animate__fadeIn">
       <img src="./images/signup.jpg" className="md:h-full h-48 object-cover w-full" />
@@ -11,10 +51,12 @@ const Login = () => {
         <p className="text-gray-500 mt-1">
           Login account to start shopping
         </p>
-        <form className="md:mt-8 space-y-6">
+        <form onSubmit={Login} 
+        className="md:mt-8 space-y-6">
           <div className="flex flex-col mb-2">
             <label className="font-semibold pb-2">Email</label>
             <input
+             onChange={handleOnChange}
               required
               name="email"
               type="email"
@@ -26,6 +68,7 @@ const Login = () => {
           <div className="flex flex-col mb-2 relative">
             <label className="font-semibold pb-2">Password</label>
             <input
+             onChange={handleOnChange}
               required
               name="password"
               type={passwordType}
@@ -46,10 +89,14 @@ const Login = () => {
               
             </button>
           </div>
-
-          <button className="bg-blue-600 text-white font-semibold w-26 py-3 mb-2 rounded mt-4 hover:bg-rose-600">
-            Login
-          </button>
+              {
+                loader ?
+                 <h1 className="font-semibold text-xl text-gray-600">Loading...</h1>
+                 :
+                 <button className="bg-blue-600 text-white font-semibold w-26 py-3 mb-2 rounded mt-4 hover:bg-rose-600">
+                 Login
+               </button>
+              }
         </form>
         <div className="flex">
         <p>Need an account?</p>
@@ -57,7 +104,14 @@ const Login = () => {
         Register Now
         </Link>
         </div>
-        
+        {error && (
+          <div className="flex justify-between items-center mt-2 p-3 bg-rose-600 text-white font-semibold rounded animate__animated animate__pulse">
+            <p>{error}</p>
+            <button onClick={()=>setError(null)}>
+            <i className="ri-close-line"></i>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

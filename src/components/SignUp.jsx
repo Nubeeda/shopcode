@@ -38,7 +38,7 @@ const SignUp = () => {
       )
       navigate("/")
     } catch (err) {
-      setError(err.message);
+      setError("Invalid credentials provided");
     }
     finally{
       setLoader(false)
