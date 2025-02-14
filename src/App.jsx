@@ -18,6 +18,8 @@ import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Contact from './components/Contact';
 import PreGuard from './components/Guard/Out';
+import Cart from './components/Cart';
+import Profile from './components/Profile'
 const App = () => {
   return (
     <BrowserRouter>
@@ -30,6 +32,8 @@ const App = () => {
         <Route path='/login' element={<Login/>}/>
         </Route>
         <Route path='/contacts' element= {<Contact/>}/>
+        <Route path='/cart' element={<Cart/>}/>
+        <Route path='/profile' element={<Profile/>}/>
         <Route path="/admin">
           <Route path="products" element={<Products />}/>
           <Route path="order" element={<Orders />}/>
