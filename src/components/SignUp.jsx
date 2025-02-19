@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link,useNavigate} from "react-router-dom";
 import "animate.css";
 import firebaseAppConfig from "../util/Firebase-config";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const auth = getAuth(firebaseAppConfig);
 
@@ -36,6 +36,7 @@ const SignUp = () => {
         formValue.email,
         formValue.password
       )
+      await updateProfile(auth.currentUser,{displayName:formValue.firstname})
       navigate("/")
     } catch (err) {
       setError("Invalid credentials provided");

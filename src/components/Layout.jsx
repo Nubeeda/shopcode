@@ -17,6 +17,7 @@ const Layout = ({ children }) => {
       }
     });
   }, []);
+  console.log(session)
   const menu = [
     {
       lable: "Home",
