@@ -3,6 +3,7 @@ import firebaseAppConfig from "../util/Firebase-config";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
+import axios from "axios";
 
 const auth = getAuth(firebaseAppConfig);
 const Profile = () => {
@@ -17,28 +18,48 @@ const Profile = () => {
     state:"",
     country:"",
     postalcode:""
-  })
+  });
+  const [profileImage, setProfileImage] = useState("/images/ava.png");
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user) 
-        {
+      if (user) {
         setSession(user);
-      } 
-      else {
+      } else {
         setSession(false);
         navigate("/login");
       }
     });
   }, []);
+
   const OnchangeFormvalue=(e)=>{
-    const input= e.target
-    const name = input.name
-    const value = input.value
+    const input= e.target;
+    const name = input.name;
+    const value = input.value;
     setFormValue({
       ...formValue,
       [name] : value
-    })
-  }
+    });
+  };
+
+  const setProfilePicture = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "my_project"); // Replace with your Cloudinary upload preset
+
+    try {
+      const res = await axios.post("https://api.cloudinary.com/v1_1/dgc6hy3zm/image/upload", formData);
+    setProfileImage(res.data.secure_url);
+    console.log("Image Uploaded:", res.data.secure_url);
+
+    } catch (error) {
+      console.error("Cloudinary upload error:", error.response?.data || error.message);
+    }
+  };
+
   return (
     <Layout>
       <div>
@@ -49,18 +70,19 @@ const Profile = () => {
           </div>
           <hr className="text-gray-300 my-6 " />
           <div className="mx-auto w-24 h-24 relative mb-6">
-            <img src="/images/ava.png" className="w-24 h-24" />
+            <img src={profileImage} className="w-24 h-24 rounded-full" />
             <input
               type="file"
               accept="image/*"
               className="h-full w-full absolute left-0 top-0 opacity-0"
+              onChange={setProfilePicture}
             />
           </div>
           <form className="grid grid-cols-2">
             <div className="flex flex-col">
               <label className="font-semibold mb-2">FullName</label>
               <input
-               onChange={OnchangeFormvalue} 
+                onChange={OnchangeFormvalue} 
                 type="text"
                 value={session?.displayName || ""}
                 className="border border-gray-300 w-96 rounded p-2"
@@ -69,8 +91,8 @@ const Profile = () => {
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Email</label>
               <input
-              onChange={OnchangeFormvalue} 
-                type={session?.email || ""}
+                onChange={OnchangeFormvalue} 
+                type="text"
                 value="Nubeeda@gmail.com"
                 className="border border-gray-300 w-96 rounded p-2"
               />
@@ -78,8 +100,8 @@ const Profile = () => {
             <div className="flex flex-col my-3">
               <label className="font-semibold mb-2">Mobile</label>
               <input
-              onChange={OnchangeFormvalue} 
-              name="mobile"
+                onChange={OnchangeFormvalue} 
+                name="mobile"
                 type="number"
                 value={formValue.mobile}
                 className="border border-gray-300 w-96 rounded p-2"
@@ -89,7 +111,7 @@ const Profile = () => {
             <div className="flex flex-col my-3 col-span-2">
               <label className="font-semibold mb-2">Area/street/vill</label>
               <input
-              onChange={OnchangeFormvalue} 
+                onChange={OnchangeFormvalue} 
                 name="address"
                 type="text"
                 value={formValue.address}
@@ -99,7 +121,7 @@ const Profile = () => {
             <div className="flex flex-col my-3">
               <label className="font-semibold mb-2">City</label>
               <input
-              onChange={OnchangeFormvalue} 
+                onChange={OnchangeFormvalue} 
                 name="city"
                 type="text"
                 value={formValue.city}
@@ -109,7 +131,7 @@ const Profile = () => {
             <div className="flex flex-col my-3">
               <label className="font-semibold mb-2">State</label>
               <input
-              onChange={OnchangeFormvalue} 
+                onChange={OnchangeFormvalue} 
                 name="state"
                 type="text"
                 value={formValue.state}
@@ -119,9 +141,9 @@ const Profile = () => {
             <div className="flex flex-col my-3">
               <label className="font-semibold mb-2">Country</label>
               <input
-              onChange={OnchangeFormvalue} 
+                onChange={OnchangeFormvalue} 
                 name="country"
-                type={formValue.country}
+                type="text"
                 value="Pakistan"
                 className="border border-gray-300 w-96 rounded p-2"
               />
@@ -129,7 +151,7 @@ const Profile = () => {
             <div className="flex flex-col my-3">
               <label className="font-semibold mb-2">PostalCode</label>
               <input
-              onChange={OnchangeFormvalue} 
+                onChange={OnchangeFormvalue} 
                 name="postalcode"
                 type="number"
                 value={formValue.postalcode}
